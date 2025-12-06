@@ -22,6 +22,8 @@ typedef struct addcc_data {
 } addcc_data_t;
 
 static void addcc_execute(int* regs, bool* running, void* data) {
+  (void)running;
+  (void)data;
   addcc_data_t* d = data;
   regs[d->dest] = d->src1 + d->src2;
 }
@@ -47,6 +49,8 @@ typedef struct srl_data {
 } srl_data_t;
 
 static void srl_execute(int* regs, bool* running, void* data) {
+  (void)running;
+  (void)data;
   srl_data_t* d = data;
   regs[d->dest] = (unsigned int)d->src2 >> d->src1;
 }
@@ -72,6 +76,8 @@ typedef struct andcc_data {
 } andcc_data_t;
 
 static void andcc_execute(int* regs, bool* running, void* data) {
+  (void)running;
+  (void)data;
   andcc_data_t* d = data;
   regs[d->dest] = d->src1 & d->src2;
 }
@@ -97,6 +103,8 @@ typedef struct orcc_data {
 } orcc_data_t;
 
 static void orcc_execute(int* regs, bool* running, void* data) {
+  (void)running;
+  (void)data;
   orcc_data_t* d = data;
   regs[d->dest] = d->src1 | d->src2;
 }
@@ -122,6 +130,8 @@ typedef struct orncc_data {
 } orncc_data_t;
 
 static void orncc_execute(int* regs, bool* running, void* data) {
+  (void)running;
+  (void)data;
   orncc_data_t* d = data;
   regs[d->dest] = ~(d->src1 | d->src2);
 }
@@ -140,7 +150,11 @@ instruction_t* orncc(int src1, int src2, int dest) {
   return inst;
 }
 
-static void nop_execute(int* regs, bool* running, void* data) { *running = false; }
+static void nop_execute(int* regs, bool* running, void* data) {
+  (void)regs;
+  (void)data;
+  *running = false;
+}
 
 instruction_t* nop() {
   instruction_t* inst = malloc(sizeof(instruction_t));

@@ -1,9 +1,10 @@
 
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "instruction_set.h"
+#include "compiler.h"
 
 #define NUM_OF_INSTRUCTIONS 6
 
@@ -13,32 +14,29 @@ int registers[NUM_REGISTERS] = {0};
 
 instruction_t* program[NUM_OF_INSTRUCTIONS];
 
-instruction_t* fetch(size_t pc) { return program[pc]; }
+int main(int argc, char** argv) {
+  if (argc < 2) {
+    fprintf(stderr, "Usage: %s <program_file>\n", argv[0]);
+    return 1;
+  }
 
-void execute(instruction_t* instr, bool* running) {
-  execute_instruction(instr, registers, running);
-}
+  file_t* file = init_file(argv[1]);
+  if (!file) {
+    fprintf(stderr, "Failed to open file: %s\n", argv[1]);
+    return 1;
+  }
 
-int main(void) {
   size_t pc = 0;
   bool running = true;
+  instruction_t* instr = NULL;
 
-  program[0] = addcc(1, 1, R1);
-  program[1] = srl(1, 8, R1);
-  program[2] = andcc(1, 1, R1);
-  program[3] = orcc(1, 0, R1);
-  program[4] = orncc(1, 0, R1);
-  program[5] = nop(0, 0, 0);
-
-  while (running && pc < NUM_OF_INSTRUCTIONS) {
-    instruction_t* instr = fetch(pc);
-
-    printf("PC: %zu ", pc);
-    printf("Registers: R1=%d (%#x)\n", registers[R1], registers[R1]);
-    execute(instr, &running);
-
+  while (running && (instr = fetch(file)) != NULL) {
+    execute_instruction(instr, registers, &running);
+    printf("Current PC: %zu ", pc);
+    printf("Registers: R1=%d (%#x) \n", registers[R1], registers[R1]);
     pc++;
   }
 
+  close_file(file);
   return 0;
 }

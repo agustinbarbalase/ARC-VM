@@ -1,18 +1,10 @@
-
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "VM.h"
 #include "compiler.h"
-
-#define NUM_OF_INSTRUCTIONS 6
-
-typedef enum { R1, NUM_REGISTERS } register_t;
-
-int registers[NUM_REGISTERS] = {0};
-
-instruction_t* program[NUM_OF_INSTRUCTIONS];
+#include "program.h"
 
 int main(int argc, char** argv) {
   if (argc < 2) {
@@ -26,17 +18,27 @@ int main(int argc, char** argv) {
     return 1;
   }
 
-  size_t pc = 0;
-  bool running = true;
-  instruction_t* instr = NULL;
+  vm_t* vm = vm_init();
+  program_t* program = program_init(1024);
 
-  while (running && (instr = fetch(file)) != NULL) {
-    execute_instruction(instr, registers, &running);
-    printf("Current PC: %zu ", pc);
-    printf("Registers: R1=%d (%#x) \n", registers[R1], registers[R1]);
-    pc++;
+  while (true) {
+    instruction_t* instr = fetch(file);
+    if (!instr) {
+      break;
+    }
+    if (!program_add_instruction(program, instr)) {
+      fprintf(stderr, "Program capacity exceeded\n");
+      break;
+    }
   }
-
+  
   close_file(file);
+
+  vm_load_program(vm, program);
+  vm_run_program(vm);
+  
+  program_destroy(program);
+  vm_destroy(vm);
+
   return 0;
 }

@@ -1,4 +1,4 @@
-SRC_FILES = main.c instruction_set.c instruction_set.h compiler.c compiler.h
+SRC_FILES = main.c instruction_set.c instruction_set.h compiler.c compiler.h VM.c VM.h program.c program.h
 CC_FLAGS = -Wall -Wextra -g -std=c11
 TARGET = exec.out
 CC = gcc

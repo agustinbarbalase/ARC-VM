@@ -1,8 +1,8 @@
 SRC_FILES = main.c
 CC_FLAGS = -Wall -Wextra -g -std=c11
-TARGET = exec
+TARGET = exec.out
 CC = gcc
 
 all:
-  $(CC) $(CC_FLAGS) $(SRC_FILES) -o $(TARGET)
+	$(CC) $(CC_FLAGS) $(SRC_FILES) -o $(TARGET)
 .PHONY: all

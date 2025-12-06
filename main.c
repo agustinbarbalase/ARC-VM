@@ -23,27 +23,33 @@ const instr_t program[NUM_OF_INSTRUCTIONS] = {{ADDCC, 2, 2, R1}, {NOP, 0, 0, 0}}
 
 register_t registers[NUM_REGISTERS] = {0};
 
+instr_t fetch(size_t pc) { return program[pc]; }
+
+void execute(instr_t instr, bool* running) {
+  switch (instr.opcode) {
+  case NOP:
+    *running = false;
+    break;
+  case ADDCC:
+    registers[instr.dest] = instr.src1 + instr.src2;
+    break;
+  default:
+    *running = false;
+    break;
+  }
+}
+
 int main(void) {
   size_t pc = 0;
   bool running = true;
 
   while (running && pc < NUM_OF_INSTRUCTIONS) {
-    instr_t instr = program[pc];
+    instr_t instr = fetch(pc);
 
     printf("PC: %zu, INSTR: %d\n", pc, instr.opcode);
     printf("Registers: R1=%d\n", registers[R1]);
+    execute(instr, &running);
 
-    switch (instr.opcode) {
-    case NOP:
-      running = false;
-      break;
-    case ADDCC:
-      registers[instr.dest] = instr.src1 + instr.src2;
-      break;
-    default:
-      running = false;
-      break;
-    }
     pc++;
   }
 

@@ -1,6 +1,7 @@
 #include "VM.h"
 
 #include <malloc.h>
+#include <stdio.h>
 
 typedef struct vm {
   program_t* program;
@@ -27,6 +28,7 @@ void vm_run_program(vm_t* vm) {
 
   while (vm->running && (instr = program_step(vm->program)) != NULL) {
     execute_instruction(instr, vm->registers, &vm->running);
+    printf("Registers: R1=%d (%#x) \n", vm->registers[0], vm->registers[0]);
   }
 }
 

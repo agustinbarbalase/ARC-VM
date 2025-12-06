@@ -3,10 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_OF_INSTRUCTIONS 2
+#define NUM_OF_INSTRUCTIONS 6
 
 typedef enum {
   NOP,
+  ANDCC,
+  ORCC,
+  ORNCC,
+  SRL,
   ADDCC,
 } instruction_t;
 
@@ -19,7 +23,14 @@ typedef struct {
   register_t dest;
 } instr_t;
 
-const instr_t program[NUM_OF_INSTRUCTIONS] = {{ADDCC, 2, 2, R1}, {NOP, 0, 0, 0}};
+const instr_t program[NUM_OF_INSTRUCTIONS] = {
+  {ADDCC, 2, 2, R1}, 
+  {SRL, 1, 8, R1},
+  {ANDCC, 0, 1, R1},
+  {ORCC, 1, 0, R1},
+  {ORNCC, 0, 1, R1},
+  {NOP, 0, 0, 0}
+};
 
 register_t registers[NUM_REGISTERS] = {0};
 
@@ -29,6 +40,18 @@ void execute(instr_t instr, bool* running) {
   switch (instr.opcode) {
   case NOP:
     *running = false;
+    break;
+  case ANDCC:
+    registers[instr.dest] = instr.src1 & instr.src2;
+    break;
+  case ORCC:
+    registers[instr.dest] = instr.src1 | instr.src2;
+    break;
+  case ORNCC:
+    registers[instr.dest] = ~(instr.src1 | instr.src2);
+    break;
+  case SRL:
+    registers[instr.dest] = (unsigned int)instr.src2 >> instr.src1;
     break;
   case ADDCC:
     registers[instr.dest] = instr.src1 + instr.src2;
@@ -47,7 +70,7 @@ int main(void) {
     instr_t instr = fetch(pc);
 
     printf("PC: %zu, INSTR: %d\n", pc, instr.opcode);
-    printf("Registers: R1=%d\n", registers[R1]);
+    printf("Registers: R1=%d (%#x)\n", registers[R1], registers[R1]);
     execute(instr, &running);
 
     pc++;

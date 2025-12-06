@@ -23,7 +23,7 @@ typedef struct addcc_data {
 
 static void addcc_execute(int* regs, bool* running, void* data) {
   addcc_data_t* d = data;
-  regs[d->dest] = regs[d->src1] + regs[d->src2];
+  regs[d->dest] = d->src1 + d->src2;
 }
 
 instruction_t* addcc(int src1, int src2, int dest) {
@@ -48,7 +48,7 @@ typedef struct srl_data {
 
 static void srl_execute(int* regs, bool* running, void* data) {
   srl_data_t* d = data;
-  regs[d->dest] = (unsigned int)regs[d->src2] >> regs[d->src1];
+  regs[d->dest] = (unsigned int)d->src2 >> d->src1;
 }
 
 instruction_t* srl(int src1, int src2, int dest) {
@@ -73,7 +73,7 @@ typedef struct andcc_data {
 
 static void andcc_execute(int* regs, bool* running, void* data) {
   andcc_data_t* d = data;
-  regs[d->dest] = regs[d->src1] & regs[d->src2];
+  regs[d->dest] = d->src1 & d->src2;
 }
 
 instruction_t* andcc(int src1, int src2, int dest) {
@@ -98,7 +98,7 @@ typedef struct orcc_data {
 
 static void orcc_execute(int* regs, bool* running, void* data) {
   orcc_data_t* d = data;
-  regs[d->dest] = regs[d->src1] | regs[d->src2];
+  regs[d->dest] = d->src1 | d->src2;
 }
 
 instruction_t* orcc(int src1, int src2, int dest) {
@@ -123,7 +123,7 @@ typedef struct orncc_data {
 
 static void orncc_execute(int* regs, bool* running, void* data) {
   orncc_data_t* d = data;
-  regs[d->dest] = ~(regs[d->src1] | regs[d->src2]);
+  regs[d->dest] = ~(d->src1 | d->src2);
 }
 
 instruction_t* orncc(int src1, int src2, int dest) {

@@ -1,5 +1,7 @@
 #include "program.h"
 
+#include <malloc.h>
+
 typedef struct program {
   instruction_t** instructions;
   size_t capacity;

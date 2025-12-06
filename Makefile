@@ -1,4 +1,4 @@
-SRC_FILES = main.c
+SRC_FILES = main.c instruction_set.c instruction_set.h
 CC_FLAGS = -Wall -Wextra -g -std=c11
 TARGET = exec.out
 CC = gcc

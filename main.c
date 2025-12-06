@@ -3,73 +3,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_OF_INSTRUCTIONS 6
+#include "instruction_set.h"
 
-typedef enum {
-  NOP,
-  ANDCC,
-  ORCC,
-  ORNCC,
-  SRL,
-  ADDCC,
-} instruction_t;
+#define NUM_OF_INSTRUCTIONS 6
 
 typedef enum { R1, NUM_REGISTERS } register_t;
 
-typedef struct {
-  instruction_t opcode;
-  int src1;
-  int src2;
-  register_t dest;
-} instr_t;
+int registers[NUM_REGISTERS] = {0};
 
-const instr_t program[NUM_OF_INSTRUCTIONS] = {
-  {ADDCC, 2, 2, R1}, 
-  {SRL, 1, 8, R1},
-  {ANDCC, 0, 1, R1},
-  {ORCC, 1, 0, R1},
-  {ORNCC, 0, 1, R1},
-  {NOP, 0, 0, 0}
-};
+instruction_t* program[NUM_OF_INSTRUCTIONS];
 
-register_t registers[NUM_REGISTERS] = {0};
+instruction_t* fetch(size_t pc) { return program[pc]; }
 
-instr_t fetch(size_t pc) { return program[pc]; }
-
-void execute(instr_t instr, bool* running) {
-  switch (instr.opcode) {
-  case NOP:
-    *running = false;
-    break;
-  case ANDCC:
-    registers[instr.dest] = instr.src1 & instr.src2;
-    break;
-  case ORCC:
-    registers[instr.dest] = instr.src1 | instr.src2;
-    break;
-  case ORNCC:
-    registers[instr.dest] = ~(instr.src1 | instr.src2);
-    break;
-  case SRL:
-    registers[instr.dest] = (unsigned int)instr.src2 >> instr.src1;
-    break;
-  case ADDCC:
-    registers[instr.dest] = instr.src1 + instr.src2;
-    break;
-  default:
-    *running = false;
-    break;
-  }
+void execute(instruction_t* instr, bool* running) {
+  execute_instruction(instr, registers, running);
 }
 
 int main(void) {
   size_t pc = 0;
   bool running = true;
 
-  while (running && pc < NUM_OF_INSTRUCTIONS) {
-    instr_t instr = fetch(pc);
+  program[0] = addcc(1, 1, R1);
+  program[1] = srl(1, 8, R1);
+  program[2] = andcc(1, 1, R1);
+  program[3] = orcc(1, 0, R1);
+  program[4] = orncc(1, 0, R1);
+  program[5] = nop(0, 0, 0);
 
-    printf("PC: %zu, INSTR: %d\n", pc, instr.opcode);
+  while (running && pc < NUM_OF_INSTRUCTIONS) {
+    instruction_t* instr = fetch(pc);
+
+    printf("PC: %zu ", pc);
     printf("Registers: R1=%d (%#x)\n", registers[R1], registers[R1]);
     execute(instr, &running);
 

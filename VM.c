@@ -31,9 +31,6 @@ void vm_run_program(vm_t* vm) {
 }
 
 void vm_destroy(vm_t* vm) {
-  if (vm->program) {
-    program_destroy(vm->program);
-  }
   free(vm->registers);
   free(vm);
 }

@@ -16,19 +16,22 @@ void execute_instruction(instruction_t* instr, int* registers, bool* running) {
 }
 
 typedef struct addcc_data {
-  int src1;
-  int src2;
-  int dest;
+  operand_t src1;
+  operand_t src2;
+  operand_t dest;
 } addcc_data_t;
 
 static void addcc_execute(int* regs, bool* running, void* data) {
   (void)running;
-  (void)data;
   addcc_data_t* d = data;
-  regs[d->dest] = d->src1 + d->src2;
+  int val1 = (d->src1.type == REGISTER) ? regs[d->src1.value] : d->src1.value;
+  int val2 = (d->src2.type == REGISTER) ? regs[d->src2.value] : d->src2.value;
+  int dest = (d->dest.type == REGISTER) ? d->dest.value : -1;
+  if (dest >= 0)
+    regs[dest] = val1 + val2;
 }
 
-instruction_t* addcc(int src1, int src2, int dest) {
+instruction_t* addcc(operand_t src1, operand_t src2, operand_t dest) {
   instruction_t* inst = malloc(sizeof(instruction_t));
   addcc_data_t* d = malloc(sizeof(addcc_data_t));
 
@@ -43,19 +46,22 @@ instruction_t* addcc(int src1, int src2, int dest) {
 }
 
 typedef struct srl_data {
-  int src1;
-  int src2;
-  int dest;
+  operand_t src1;
+  operand_t src2;
+  operand_t dest;
 } srl_data_t;
 
 static void srl_execute(int* regs, bool* running, void* data) {
   (void)running;
-  (void)data;
   srl_data_t* d = data;
-  regs[d->dest] = (unsigned int)d->src2 >> d->src1;
+  int val1 = (d->src1.type == REGISTER) ? regs[d->src1.value] : d->src1.value;
+  int val2 = (d->src2.type == REGISTER) ? regs[d->src2.value] : d->src2.value;
+  int dest = (d->dest.type == REGISTER) ? d->dest.value : -1;
+  if (dest >= 0)
+    regs[dest] = (unsigned int)val2 >> val1;
 }
 
-instruction_t* srl(int src1, int src2, int dest) {
+instruction_t* srl(operand_t src1, operand_t src2, operand_t dest) {
   instruction_t* inst = malloc(sizeof(instruction_t));
   srl_data_t* d = malloc(sizeof(srl_data_t));
 
@@ -70,19 +76,22 @@ instruction_t* srl(int src1, int src2, int dest) {
 }
 
 typedef struct andcc_data {
-  int src1;
-  int src2;
-  int dest;
+  operand_t src1;
+  operand_t src2;
+  operand_t dest;
 } andcc_data_t;
 
 static void andcc_execute(int* regs, bool* running, void* data) {
   (void)running;
-  (void)data;
   andcc_data_t* d = data;
-  regs[d->dest] = d->src1 & d->src2;
+  int val1 = (d->src1.type == REGISTER) ? regs[d->src1.value] : d->src1.value;
+  int val2 = (d->src2.type == REGISTER) ? regs[d->src2.value] : d->src2.value;
+  int dest = (d->dest.type == REGISTER) ? d->dest.value : -1;
+  if (dest >= 0)
+    regs[dest] = val1 & val2;
 }
 
-instruction_t* andcc(int src1, int src2, int dest) {
+instruction_t* andcc(operand_t src1, operand_t src2, operand_t dest) {
   instruction_t* inst = malloc(sizeof(instruction_t));
   andcc_data_t* d = malloc(sizeof(andcc_data_t));
 
@@ -97,19 +106,22 @@ instruction_t* andcc(int src1, int src2, int dest) {
 }
 
 typedef struct orcc_data {
-  int src1;
-  int src2;
-  int dest;
+  operand_t src1;
+  operand_t src2;
+  operand_t dest;
 } orcc_data_t;
 
 static void orcc_execute(int* regs, bool* running, void* data) {
   (void)running;
-  (void)data;
   orcc_data_t* d = data;
-  regs[d->dest] = d->src1 | d->src2;
+  int val1 = (d->src1.type == REGISTER) ? regs[d->src1.value] : d->src1.value;
+  int val2 = (d->src2.type == REGISTER) ? regs[d->src2.value] : d->src2.value;
+  int dest = (d->dest.type == REGISTER) ? d->dest.value : -1;
+  if (dest >= 0)
+    regs[dest] = val1 | val2;
 }
 
-instruction_t* orcc(int src1, int src2, int dest) {
+instruction_t* orcc(operand_t src1, operand_t src2, operand_t dest) {
   instruction_t* inst = malloc(sizeof(instruction_t));
   orcc_data_t* d = malloc(sizeof(orcc_data_t));
 
@@ -124,19 +136,22 @@ instruction_t* orcc(int src1, int src2, int dest) {
 }
 
 typedef struct orncc_data {
-  int src1;
-  int src2;
-  int dest;
+  operand_t src1;
+  operand_t src2;
+  operand_t dest;
 } orncc_data_t;
 
 static void orncc_execute(int* regs, bool* running, void* data) {
   (void)running;
-  (void)data;
   orncc_data_t* d = data;
-  regs[d->dest] = ~(d->src1 | d->src2);
+  int val1 = (d->src1.type == REGISTER) ? regs[d->src1.value] : d->src1.value;
+  int val2 = (d->src2.type == REGISTER) ? regs[d->src2.value] : d->src2.value;
+  int dest = (d->dest.type == REGISTER) ? d->dest.value : -1;
+  if (dest >= 0)
+    regs[dest] = ~(val1 | val2);
 }
 
-instruction_t* orncc(int src1, int src2, int dest) {
+instruction_t* orncc(operand_t src1, operand_t src2, operand_t dest) {
   instruction_t* inst = malloc(sizeof(instruction_t));
   orncc_data_t* d = malloc(sizeof(orncc_data_t));
 

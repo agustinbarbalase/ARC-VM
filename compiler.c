@@ -18,6 +18,26 @@ file_t* init_file(const char* filename) {
   return file;
 }
 
+bool parse_operand(const char* str, operand_t* out) {
+  if (str[0] == '%') {
+    int reg_num = -1;
+    if (sscanf(str, "%%r%d", &reg_num) == 1 && reg_num >= 0) {
+      out->type = REGISTER;
+      out->value = reg_num;
+      return true;
+    }
+    return false;
+  } else {
+    int val = 0;
+    if (sscanf(str, "%d", &val) == 1) {
+      out->type = IMMEDIATE;
+      out->value = val;
+      return true;
+    }
+    return false;
+  }
+}
+
 instruction_t* fetch(file_t* file) {
   if (!file) {
     return NULL;
@@ -29,17 +49,16 @@ instruction_t* fetch(file_t* file) {
   }
 
   char instr_name[16];
-  int src1, src2;
-  char dest_reg[8];
+  char src1_str[16], src2_str[16], dest_str[16];
 
-  if (sscanf(line, "%15s %d, %d, %7s", instr_name, &src1, &src2, dest_reg) != 4) {
+  if (sscanf(line, "%15s %15[^,], %15[^,], %15s", instr_name, src1_str, src2_str, dest_str) != 4) {
     return NULL;
   }
 
-  int dest = -1;
-  if (strcmp(dest_reg, "%r1") == 0) {
-    dest = 0; // R1 is 0
-  } else {
+  operand_t src1, src2, dest;
+
+  if (!parse_operand(src1_str, &src1) || !parse_operand(src2_str, &src2) ||
+      !parse_operand(dest_str, &dest)) {
     return NULL;
   }
 

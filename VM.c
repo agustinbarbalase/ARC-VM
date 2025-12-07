@@ -28,7 +28,7 @@ void vm_run_program(vm_t* vm) {
 
   while (vm->running && (instr = program_step(vm->program)) != NULL) {
     execute_instruction(instr, vm->registers, &vm->running);
-    printf("Registers: R1=%d (%#x) \n", vm->registers[0], vm->registers[0]);
+    printf("Registers: R1=%d (%#x) \n", vm->registers[1], vm->registers[1]);
   }
 }
 

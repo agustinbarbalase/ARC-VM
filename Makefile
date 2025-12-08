@@ -2,9 +2,11 @@ CC = gcc
 CC_FLAGS = -Wall -Wextra -g -std=c11
 
 SRC_FILES = main.c \
-	VM.c \
-	program.c \
 	compiler.c \
+	utils/hash.c \
+	vm/VM.c \
+	vm/storage/memory.c \
+	vm/program.c \
 	instruction_set/instruction_set.c \
 	instruction_set/nop.c \
 	instruction_set/arithmetic_instructions/addcc.c \
@@ -13,7 +15,7 @@ SRC_FILES = main.c \
 	instruction_set/logic_instructions/orncc.c \
 	instruction_set/shift_instructions/srl.c
 
-INCLUDE_DIRS = -I. -Iinstruction_set -Iinstruction_set/arithmetic_instructions -Iinstruction_set/logic_instructions -Iinstruction_set/shift_instructions
+INCLUDE_DIRS = -I. -Ivm -Iutils -Iinstruction_set -Iinstruction_set/arithmetic_instructions -Iinstruction_set/logic_instructions -Iinstruction_set/shift_instructions
 
 TARGET = exec.out
 

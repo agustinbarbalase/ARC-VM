@@ -19,26 +19,29 @@ int main(int argc, char** argv) {
   }
 
   vm_t* vm = vm_init();
-  program_t* program = program_init(1024);
+  program_t* program = program_init(4096, 0);
 
+  instruction_t* instr = NULL;
   while (true) {
-    instruction_t* instr = fetch(file);
+    instr = fetch(file);
     if (!instr) {
       break;
     }
     if (!program_add_instruction(program, instr)) {
-      fprintf(stderr, "Program capacity exceeded\n");
+      destroy_instruction(instr);
+      instr = NULL;
       break;
     }
   }
-  
+
+  if (instr) {
+    destroy_instruction(instr);
+  }
+
   close_file(file);
 
   vm_load_program(vm, program);
   vm_run_program(vm);
-  
-  program_destroy(program);
   vm_destroy(vm);
-
   return 0;
 }

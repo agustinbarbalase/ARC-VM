@@ -22,5 +22,4 @@ void destroy_instruction(instruction_t* instr) {
 
 void execute_instruction(instruction_t* instr, int* registers, bool* running) {
   instr->execute(registers, running, instr->data);
-  destroy_instruction(instr);
 }
